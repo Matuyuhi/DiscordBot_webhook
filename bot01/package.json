@@ -1,0 +1,15 @@
+{
+  "name": "bot01",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot01.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "yuhi",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/core": "^0.5.2",
+    "discord.js": "^14.9.0"
+  }
+}
