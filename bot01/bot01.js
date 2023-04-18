@@ -48,13 +48,24 @@ client.on(Events.InteractionCreate, async interaction => {
 app.use(bodyParser.json());
 
 app.post('/github-webhook', (req, res) => {
-  const payload = req.body;
-  console.log("post request")
-  console.log(payload)
+    const payload = req.body;
+    console.log("post request")
+    console.log(payload)
+    res.json({
+        info: "git-webhookからメッセージを受信しました",
+        post: payload
+    })
+});
+
+app.get('/github-webhook', (req, res) => {
+    res.json({
+        info: "gitから受信するAPIです",
+        post: payload
+    })
 });
 
 app.listen(port, () => {
-  console.log(`Webhook receiver app listening at http://localhost:${port}`);
+    console.log(`Webhook receiver app listening at http://localhost:${port}`);
 });
 
 
