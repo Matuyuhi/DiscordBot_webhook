@@ -51,7 +51,9 @@ app.post('/github-webhook', (req, res) => {
     const payload = req.body;
     console.log("post request")
     console.log(payload)
-    return 
+    return res.json({
+        post: payload
+    })
 })
 
 app.get('/github-webhook', (req, res) => {
