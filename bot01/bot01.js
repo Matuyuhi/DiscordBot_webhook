@@ -59,8 +59,7 @@ app.post('/github-webhook', (req, res) => {
 
 app.get('/github-webhook', (req, res) => {
     res.json({
-        info: "gitから受信するAPIです",
-        post: payload
+        info: "gitから受信するAPIです"
     })
 });
 
