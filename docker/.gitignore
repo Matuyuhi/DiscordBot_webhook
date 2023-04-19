@@ -1,0 +1,6 @@
+# docker mysqlのデータ保存用
+data
+# sqlのログ
+logs
+
+*.test

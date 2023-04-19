@@ -1,0 +1,35 @@
+{
+    "root": true,
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:prettier/recommended"
+    ],
+    "overrides": [
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "plugins": [
+        "node"
+    ],
+    "ignorePatterns": ["/node_modules/"],
+    "rules": {
+        "node/no-deprecated-api": "error",
+        // "node/exports-style": ["error", "exports"],
+        "semi": ["error", "never", {"beforeStatementContinuationChars": "never"}],
+        "semi-spacing": ["error", {"after": true, "before": false}],
+        "semi-style": ["error", "first"],
+        "no-extra-semi": "error",
+        "no-unexpected-multiline": "error",
+        "no-unreachable": "error",
+        "no-var": "error",
+        "space-before-blocks": "warn",
+        "no-undef": "warn"
+    }
+}

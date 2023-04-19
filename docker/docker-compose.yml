@@ -1,0 +1,49 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.0.32-debian
+    platform: linux/amd64
+    container_name: db-container
+
+    command: mysqld --innodb_use_native_aio=0
+
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD=master
+      - TZ=Asia/Tokyo
+
+
+    ports:
+      - '3306:3306'
+      - '33060:33060'
+
+    volumes:
+      - ./db/init.d:/docker-entrypoint-initdb.d
+      - ./db/conf/my.conf:/etc/mysql/conf.d/my.conf:ro
+      - ./db/logs:/var/log/mysql
+      # data
+      - ./db/data:/var/lib/mysql
+
+  app:
+    image: node:latest
+    container_name: DiscordBot01
+
+    environment:
+      - MYSQL_HOST=db
+      - TZ=Asia/Tokyo
+      - SHIFTAPP_DEV=dev
+
+    tty: true
+
+    ports:
+      - '3000:3000'
+
+    volumes:
+      - ../bot01:/bot01
+
+    working_dir: /bot01
+
+    depends_on:
+      - db
+
+    command: make pm2
