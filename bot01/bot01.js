@@ -52,7 +52,8 @@ app.post('/github-webhook', (req, res) => {
     console.log("post request")
     console.log(payload)
     return res.json({
-        post: payload
+        action: payload.action,
+	issue: payload.issue
     })
 })
 
