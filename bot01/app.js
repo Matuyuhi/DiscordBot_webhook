@@ -139,7 +139,7 @@ app.post('/github-webhook', (req, res) => {
     console.log(payload)
     console.log(req.headers)
     const opt = convertIssue(payload)
-    client.channels.cache.get('1097865962025402399').send(opt)
+    client.channels.cache.get('1097865962025402399').send({ embeds: [opt] })
     // .send(options.message('', String(req.body)))
 
     return res.json({
@@ -235,6 +235,7 @@ function convertIssue(_data) {
             value: labels,
         })
     }
+    return embed
 }
 
 function convertUser(_data) {
