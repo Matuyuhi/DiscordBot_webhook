@@ -1,5 +1,10 @@
 // discord.js モジュールのインポート
-const { Client, Events, GatewayIntentBits } = require('discord.js')
+const {
+    Client,
+    Events,
+    GatewayIntentBits,
+    EmbedBuilder,
+} = require('discord.js')
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
@@ -132,10 +137,11 @@ app.post('/github-webhook', (req, res) => {
     const payload = req.body
     console.log('post request')
     console.log(payload)
-    client.channels.cache
-        .get('1097865962025402399')
-        .send(options.message(payload.action, 'hello'))
+    console.log(req.headers)
+    const opt = convertIssue(payload)
+    client.channels.cache.get('1097865962025402399').send(opt)
     // .send(options.message('', String(req.body)))
+
     return res.json({
         action: payload.action,
         // issue: payload.issue,
@@ -155,3 +161,104 @@ app.listen(port, () => {
 
 // Discordへの接続
 client.login(token)
+
+function convertIssue(_data) {
+    if (!_data.action || !_data.issue || !_data.issue.user) return
+    const issue = _data.issue
+    const action = _data.action
+
+    const editor = convertUser(_data.sender)
+    const htmlUrl = issue.html_url
+    const title = String(issue.title)
+    // const org = convertUser(_data.organization)
+
+    let actionName
+    switch (action) {
+        case 'opened':
+            actionName = '__issueが作成されました !__\n'
+            break
+        case 'created':
+            actionName = '__issueにコメントが追加されました__\n'
+            break
+        case 'assigned':
+            actionName = '__Assignが変更されました__\n'
+            break
+        case 'labeled':
+            actionName = '__Labelが変更されました__\n'
+            break
+        default:
+            actionName = '__不明なactionでした__\n'
+            break
+    }
+
+    let description =
+        //issue説明欄
+        (issue.body ? issue.body + '\n' : '') +
+        //commentの数
+        '__comments : ' +
+        issue.comments +
+        '__\n' +
+        // status
+        actionName
+
+    const embed = new EmbedBuilder()
+    embed.setAuthor({
+        name: editor.login,
+        url: editor.url,
+        iconURL: editor.avatar,
+    })
+    embed.setTitle(title)
+    embed.setURL(htmlUrl)
+    embed.setDescription(description)
+
+    if (_data.comment) {
+        const comment = _data.comment
+        const user = convertUser(comment.user)
+        embed.addFields({
+            name: '@' + user.login + "'s New comment",
+            value: comment.body,
+        })
+    }
+
+    const assignes = convertAssignes(issue.assignees)
+    if (assignes) {
+        embed.addFields({
+            name: 'Assignes',
+            value: assignes,
+        })
+    }
+
+    const labels = convertLabels(issue.labels)
+    if (labels) {
+        embed.addFields({
+            name: 'Labels',
+            value: labels,
+        })
+    }
+}
+
+function convertUser(_data) {
+    return {
+        login: String(_data.login),
+        avatar: String(_data.avatar_url),
+        url: String(_data.html_url),
+        md: function () {
+            return ' [' + this.login + '](' + this.url + ') '
+        },
+    }
+}
+function convertAssignes(_data) {
+    let namesText = ''
+    for (const as of _data) {
+        namesText += String(as.login ? as.login + '.  ' : '')
+    }
+    return namesText
+}
+
+function convertLabels(_labels) {
+    let namesText = ''
+    for (const label of _labels) {
+        namesText += String(label.name ? label.name + '.  ' : '')
+    }
+    return namesText
+}
