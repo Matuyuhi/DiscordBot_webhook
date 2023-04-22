@@ -128,17 +128,12 @@ app.use(bodyParser.json())
  * v API
  * https://docs.github.com/ja/webhooks-and-events/webhooks/webhook-events-and-payloads#project_column
  */
-app.post('/github-webhook', async (req, res) => {
+app.post('/github-webhook', (req, res) => {
     const payload = req.body
     console.log('post request')
     console.log(payload)
-    try {
-        await client.channels.cache
-            .get('1097865962025402399')
-            .send(options.message('', String(req.body)))
-    } catch (err) {
-        console.log('error' + err)
-    }
+    client.channels.cache.get('1097865962025402399').send(' hello ')
+    // .send(options.message('', String(req.body)))
     return res.json({
         action: payload.action,
         // issue: payload.issue,
