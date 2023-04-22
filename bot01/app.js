@@ -132,7 +132,7 @@ app.post('/github-webhook', (req, res) => {
     const payload = req.body
     console.log('post request')
     console.log(payload)
-    client.channels.cache.get('1097865962025402399').send(' hello ')
+    client.channels.cache.get('1097865962025402399').send('', String(req.body))
     // .send(options.message('', String(req.body)))
     return res.json({
         action: payload.action,
