@@ -136,8 +136,8 @@ app.use(bodyParser.json())
 app.post('/github-webhook', (req, res) => {
     const payload = req.body
     console.log('post request')
-    console.log(payload)
-    console.log(req.headers)
+    //console.log(payload)
+    //console.log(req.headers)
     const opt = convertIssue(payload)
     console.log('send >>>' + opt)
     if (opt) {
