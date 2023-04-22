@@ -136,12 +136,12 @@ app.post('/github-webhook', async (req, res) => {
         await client.channels.cache
             .get('1097865962025402399')
             .send(options.message('', req.body))
-    } catch {
-        console.log('error')
+    } catch (err) {
+        console.log('error' + err)
     }
     return res.json({
         action: payload.action,
-        issue: payload.issue,
+        // issue: payload.issue,
     })
 })
 
