@@ -135,7 +135,7 @@ app.post('/github-webhook', async (req, res) => {
     try {
         await client.channels.cache
             .get('1097865962025402399')
-            .send(options.message('', req.body))
+            .send(options.message('', String(req.body)))
     } catch (err) {
         console.log('error' + err)
     }
