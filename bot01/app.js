@@ -134,7 +134,7 @@ app.post('/github-webhook', (req, res) => {
     console.log(payload)
     client.channels.cache
         .get('1097865962025402399')
-        .send(options.message('', String(req.body)))
+        .send(options.message(payload.action, 'hello'))
     // .send(options.message('', String(req.body)))
     return res.json({
         action: payload.action,
