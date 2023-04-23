@@ -248,7 +248,8 @@ async function convertIssue(_data) {
         actionName
 
     const links = await getLink()
-    description = description.replaceUsersLink(links)
+    description = String(description.replaceUsersLink(links))
+    console.log(description)
 
     const embed = new EmbedBuilder()
     embed.setAuthor({
@@ -262,12 +263,12 @@ async function convertIssue(_data) {
 
     if (_data.comment) {
         const comment = String(_data.comment.body).replaceUsersLink(links)
-        const user = convertUser(comment.user)
+        const user = convertUser(_data.comment.user)
         const title = String(
             '**@' + user.login + "'s New Comment**\n"
         ).replaceUsersLink(links)
         embed.addFields({
-            name: '',
+            name: ' ',
             value: title + comment,
         })
     }
@@ -276,7 +277,7 @@ async function convertIssue(_data) {
     if (assignes) {
         embed.addFields({
             name: 'Assignes',
-            value: assignes.replaceUsersLink(links),
+            value: String(assignes.replaceUsersLink(links)),
             inline: true,
         })
     }
@@ -294,7 +295,7 @@ async function convertIssue(_data) {
         text: org.login,
         iconURL: org.avater,
     })
-    embed.setTimestamp(moment(issue.updated_at))
+    embed.setTimestamp(new Date(moment(issue.updated_at).format('YYYY-MM-DD HH:mm:ss')))
     return embed
 }
 
@@ -348,9 +349,9 @@ String.prototype.replaceUsersLink = function (replaces) {
     let out = this
     for (const data of replaces) {
         const base = String(data.gitname)
-        const place = '<!@' + String(data.id) + '>'
+        const place = '<@!' + String(data.id) + '>'
         if (out.match(base)) {
-            out = out.replace(new RegExp(base, 'g'), place)
+            out = out.replace(new RegExp('@'+base, 'g'), place)
         }
     }
     return out
