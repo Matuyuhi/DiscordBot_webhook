@@ -93,23 +93,29 @@ module.exports = {
                         .setRequired(true)
                 ),
             execute: async function (interaction) {
-                const guildId = await interaction.getString('guildId')
-                const channelId = await interaction.options.getString(
-                    'channelid'
-                )
-                const html_url = await interaction.options.getString('giturl')
-                const name = await interaction.options.getString('name')
-                console.log(guildId)
-                console.log(channelId)
-                console.log(html_url)
-                console.log(name)
-                if (!guildId || !channelId || !html_url || !name) return
-                if (await setChannel(guildId, channelId, html_url, name)) {
-                    await interaction.reply('OK')
-                } else {
-                    await interaction.reply('error')
+                try {
+                    console.log(await interaction)
+                    const guildId = await interaction.guildId
+                    const channelId = await interaction.options.getString(
+                        'channelid'
+                    )
+                    const html_url = await interaction.options.getString(
+                        'giturl'
+                    )
+                    const name = await interaction.options.getString('name')
+                    console.log(guildId)
+                    console.log(channelId)
+                    console.log(html_url)
+                    console.log(name)
+                    if (!guildId || !channelId || !html_url || !name) return
+                    if (await setChannel(guildId, channelId, html_url, name)) {
+                        await interaction.reply('OK')
+                    } else {
+                        await interaction.reply('error')
+                    }
+                } catch (err) {
+                    console.log(err)
                 }
-
             },
         },
     ],
