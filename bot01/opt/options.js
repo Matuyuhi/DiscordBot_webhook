@@ -84,53 +84,63 @@ exports.help = function (subopt = null) {
         })
         .setTitle('Github Team Link')
         .setURL('https://github.com/A-Classe')
-        .setDescription(
-            '**This is A-Class**\n\nhttps://automatic.links\n> Block Quotes\n```\nCode Blocks\n```\n*Emphasis* or _emphasis_\n`Inline code` or ``inline code``\n[Links](https://example.com)\n<@U- >, <@!123>, <#123>, <@&123>, @here, @everyone mentions\n||Spoilers||\n~~Strikethrough~~\n**Strong**\n__Underline__'
-        )
+        // .setDescription(
+        //     '**This is A-Class**\n\nhttps://automatic.links\n> Block Quotes\n```\nCode Blocks\n```\n*Emphasis* or _emphasis_\n`Inline code` or ``inline code``\n[Links](https://example.com)\n<@U- >, <@!123>, <#123>, <@&123>, @here, @everyone mentions\n||Spoilers||\n~~Strikethrough~~\n**Strong**\n__Underline__'
+        // )
         .setFooter({
-            text: 'v0.1.4-beta',
+            text: 'v1.0.0-beta',
             iconURL: 'https://slate.dan.onl/slate.png',
         })
         .setTimestamp()
-    if (subopt == 'link') {
-        embed.addFields(
-            {
-                name: 'json形式で書けるフィールド、こっちは名前で最大256字',
-                value: 'フィールドの値　※1024字まで',
-            },
-            {
-                name: '### 足りないとエラーが出る',
-                value: '[で1セット](https://github.com)',
-            },
-            {
-                name: 'Author',
-                value: 'Discord U-#1219\n[Matuyuhi](https://github.com/Matuyuhi) \n[source code](https://github.com/Matuyuhi/discord_bot_test)',
-            }
-        )
-    } else {
-        embed.addFields(
-            {
-                name: 'command 一覧',
-                value: '/help sub[option]',
-            },
-            {
-                name: '/help',
-                value: 'botのヘルプ',
-            },
-            {
-                name: '/help sub [options]',
-                value: 'option\n L  link  -- リンクのtitleとURLを表示\n L',
-            },
-            {
-                name: '/link to [title] for [link]',
-                value: 'title \n\nex)\n /link  to [projectA]   for [https://example.com/hoge] dis [なんかリンク]\n-> \n**[projectA](https://example.com/hoge) **\n   L なんかのリンク\n\n/ link list --- 一覧表示\n-> \n**[projectA](https://example.com/hoge)**\n   L なんかのリンク\n**[projectB](https://example.com/hoge)**\n   L なんかのリンク\n**[projectC](https://example.com/hoge)**\n   L なんかのリンク',
-            },
-            {
-                name: 'Author',
-                value: 'Discord U-#1219\n[Matuyuhi](https://github.com/Matuyuhi) \n[source code](https://github.com/Matuyuhi/discord_bot_test)',
-            }
-        )
-    }
+    // if (subopt == 'link') {
+    //     embed.addFields(
+    //         {
+    //             name: 'json形式で書けるフィールド、こっちは名前で最大256字',
+    //             value: 'フィールドの値 ※1024字まで',
+    //         },
+    //         {
+    //             name: '### 足りないとエラーが出る',
+    //             value: '[で1セット](https://github.com)',
+    //         },
+    //         {
+    //             name: 'Author',
+    //             value: 'Discord U-#1219\n[Matuyuhi](https://github.com/Matuyuhi) \n[source code](https://github.com/Matuyuhi/discord_bot_test)',
+    //         }
+    //     )
+    // } else {
+    //     embed.addFields(
+    //         {
+    //             name: 'command 一覧',
+    //             value: '/help sub[option]',
+    //         },
+    //         {
+    //             name: '/help',
+    //             value: 'botのヘルプ',
+    //         },
+    //         {
+    //             name: '/help sub [options]',
+    //             value: 'option\n L  link  -- リンクのtitleとURLを表示\n L',
+    //         },
+    //         {
+    //             name: '/link to [title] for [link]',
+    //             value: 'title \n\nex)\n /link  to [projectA]   for [https://example.com/hoge] dis [なんかリンク]\n-> \n**[projectA](https://example.com/hoge) **\n   L なんかのリンク\n\n/ link list --- 一覧表示\n-> \n**[projectA](https://example.com/hoge)**\n   L なんかのリンク\n**[projectB](https://example.com/hoge)**\n   L なんかのリンク\n**[projectC](https://example.com/hoge)**\n   L なんかのリンク',
+    //         },
+    //         {
+    //             name: 'Author',
+    //             value: 'Discord U-#1219\n[Matuyuhi](https://github.com/Matuyuhi) \n[source code](https://github.com/Matuyuhi/discord_bot_test)',
+    //         }
+    //     )
+    // }
+    embed.addFields(
+        {
+            name: 'command 一覧',
+            value: '追加予定',
+        },
+        {
+            name: 'Author',
+            value: 'Discord U-#1219\n[Matuyuhi](https://github.com/Matuyuhi) \n[source code](https://github.com/Matuyuhi/discord_bot_test)',
+        }
+    )
     return {
         embeds: [embed],
     }

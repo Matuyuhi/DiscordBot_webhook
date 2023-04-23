@@ -7,6 +7,7 @@ const {
 } = require('discord.js')
 const express = require('express')
 const bodyParser = require('body-parser')
+const moment = require('moment')
 const app = express()
 const port = 3000
 
@@ -26,6 +27,8 @@ const client = new Client({
 const { commands } = require('./commands/hey')
 //メッセージのテンプレートの用意
 const options = require('./opt/options')
+//
+const { getLink, getChannel } = require('./js/botFunc')
 
 // トークンの用意
 const { token } = require('./.env.json')
@@ -37,8 +40,20 @@ client.once(Events.ClientReady, (c) => {
     console.log(`${c.user.tag}ready...`)
 })
 
-function send(opt) {
-    client.channels.cache.get('1097865962025402399').send(opt)
+/**
+ * 送信
+ * @param {{embed : EmbedBuilder}} opt 送信するOption
+ * @param {*} guildId serverId
+ */
+async function send(opt, guildId) {
+    if (!opt || !guildId) return
+    try {
+        const info = await getChannel(String(guildId))
+        if (!info || !info.channelId) return
+        client.channels.cache.get(info.channelId).send(opt)
+    } catch (err) {
+        console.log(err)
+    }
 }
 
 //スラッシュコマンドに応答するには、interactionCreateのイベントリスナーを使う必要があります
@@ -83,43 +98,43 @@ client.on(Events.InteractionCreate, async (interaction) => {
  */
 client.on(Events.MessageCreate, async function (message) {
     // botは
-    if (message.author.bot) {
-        return
-    }
-    // 内容がなければ
-    if (!message.content) {
-        return
-    }
-    switch (message.content) {
-        /**
-         * 通信テスト用
-         * ping全てに反応するので
-         * Client側でBotが閲覧できるチャンネルを制限するべき
-         */
-        case 'ping':
-            send(options.template())
-            break
-        /**
-         * Client ServerにCommand接続
-         * これをやらないと
-         * Clientからスラッシュコマンドは送れない
-         */
-        case 'Bot setup init':
-            if (message.guildId) {
-                try {
-                    await init(message.guildId)
-                } catch {
-                    console.log('error')
+    try {
+        if (message.author.bot) {
+            return
+        }
+        // 内容がなければ
+        if (!message.content) {
+            return
+        }
+        switch (message.content) {
+            /**
+             * 通信テスト用
+             * ping全てに反応するので
+             * Client側でBotが閲覧できるチャンネルを制限するべき
+             */
+            case '!ping':
+                await send(options.ping())
+                break
+            /**
+             * Client ServerにCommand接続
+             * これをやらないと
+             * Clientからスラッシュコマンドは送れない
+             */
+            case '!BotSetupInit':
+                if (message.guildId) {
+                    try {
+                        await init(message.guildId)
+                    } catch {
+                        console.log('error')
+                    }
                 }
-            }
-            break
-        default:
-            send(options.ping())
-            break
+                break
+            default:
+                break
+        }
+    } catch (err) {
+        console.log(err)
     }
-    console.log(message)
-
-    message.channel.send('hi!')
 })
 
 // vvvv WEB API vvvvvv
@@ -133,17 +148,23 @@ app.use(bodyParser.json())
  * v API
  * https://docs.github.com/ja/webhooks-and-events/webhooks/webhook-events-and-payloads#project_column
  */
-app.post('/github-webhook', (req, res) => {
+app.post('/github-webhook', async (req, res) => {
     const payload = req.body
     console.log('post request')
     //console.log(payload)
     //console.log(req.headers)
-    const opt = convertIssue(payload)
-    console.log('send >>>' + opt)
-    if (opt) {
-        client.channels.cache.get('1097865962025402399').send({ embeds: [opt] })
+    try {
+        const opt = await convertIssue(payload)
+        console.log('send >>>' + opt)
+        if (opt) {
+            await send({ embeds: [opt] })
+            // client.channels.cache
+            //     .get('1097865962025402399')
+            //     .send({ embeds: [opt] })
+        }
+    } catch (err) {
+        console.log(err)
     }
-    // .send(options.message('', String(req.body)))
 
     return res.json({
         action: payload.action,
@@ -165,15 +186,32 @@ app.listen(port, () => {
 // Discordへの接続
 client.login(token)
 
-function convertIssue(_data) {
+/**
+ * User: {login: String, avatar_url: String, html_url: String}
+ * @param {{
+ * action:String,
+ * issue: {html_url: String,},
+ * sender: User,
+ * comment: {user: User, body: String}?
+ * }} _data
+ * @returns EmbedBuilder
+ */
+async function convertIssue(_data) {
     if (!_data.action || !_data.issue || !_data.issue.user) return
     const issue = _data.issue
     const action = _data.action
+    const repository = _data.repository
 
     const editor = convertUser(_data.sender)
     const htmlUrl = issue.html_url
-    const title = String(issue.title)
-    // const org = convertUser(_data.organization)
+    const title =
+        '[' +
+        String(repository.full_name) +
+        ']#' +
+        String(issue.number) +
+        ':  ' +
+        String(issue.title)
+    const org = convertUser(_data.organization)
 
     let actionName
     switch (action) {
@@ -204,6 +242,9 @@ function convertIssue(_data) {
         // status
         actionName
 
+    const links = await getLink()
+    description = description.replaceUsersLink(links)
+
     const embed = new EmbedBuilder()
     embed.setAuthor({
         name: editor.login,
@@ -215,11 +256,14 @@ function convertIssue(_data) {
     embed.setDescription(description)
 
     if (_data.comment) {
-        const comment = _data.comment
+        const comment = String(_data.comment.body).replaceUsersLink(links)
         const user = convertUser(comment.user)
+        const title = String(
+            '**@' + user.login + "'s New Comment**\n"
+        ).replaceUsersLink(links)
         embed.addFields({
-            name: '@' + user.login + "'s New comment",
-            value: comment.body,
+            name: '',
+            value: title + comment,
         })
     }
 
@@ -227,7 +271,8 @@ function convertIssue(_data) {
     if (assignes) {
         embed.addFields({
             name: 'Assignes',
-            value: assignes,
+            value: assignes.replaceUsersLink(links),
+            inline: true,
         })
     }
 
@@ -236,11 +281,22 @@ function convertIssue(_data) {
         embed.addFields({
             name: 'Labels',
             value: labels,
+            inline: true,
         })
     }
+
+    embed.setFooter({
+        text: org.login,
+        iconURL: org.avater,
+    })
+    embed.setTimestamp(moment(issue.updated_at))
     return embed
 }
 
+/**
+ * @param {{login: String, avatar_url: String, html_url: String}} _data UserObject
+ * @returns {login: String, avater: String, url: String}
+ */
 function convertUser(_data) {
     return {
         login: String(_data.login),
@@ -251,18 +307,46 @@ function convertUser(_data) {
         },
     }
 }
+
+/**
+ * Userのlogin(名前)を取り出して文字列に
+ * @param {[{login: String}]} _data
+ * @returns String
+ */
 function convertAssignes(_data) {
     let namesText = ''
     for (const as of _data) {
-        namesText += String(as.login ? as.login + '.  ' : '')
+        namesText += String(as.login ? '' + as.login + '.  ' : '')
     }
     return namesText
 }
 
+/**
+ * nameだけ取り出して文字列に結合
+ * @param {[{name: String}]} _labels
+ * @returns String
+ */
 function convertLabels(_labels) {
     let namesText = ''
     for (const label of _labels) {
         namesText += String(label.name ? label.name + '.  ' : '')
     }
     return namesText
+}
+
+/**
+ * Githubのユーザー名をdiscordのメンションに置き換える
+ * @param {[{name: String, id: String, gitname: String}]} replaces
+ * @returns String
+ */
+String.prototype.replaceUsersLink = function (replaces) {
+    let out = this
+    for (const data of replaces) {
+        const base = String(data.gitname)
+        const place = '<!@' + String(data.id) + '>'
+        if (out.match(base)) {
+            out = out.replace(new RegExp(base, 'g'), place)
+        }
+    }
+    return out
 }
