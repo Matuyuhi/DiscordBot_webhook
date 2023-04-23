@@ -148,16 +148,22 @@ app.use(bodyParser.json())
  * v API
  * https://docs.github.com/ja/webhooks-and-events/webhooks/webhook-events-and-payloads#project_column
  */
-app.post('/github-webhook', async (req, res) => {
+app.post('/github-webhook/:guildId', async (req, res) => {
     const payload = req.body
     console.log('post request')
+    const guildId = String(req.params.guildId)
+    if (!guildId) {
+        return res.json({
+            body: 'guildIdがありません!!',
+        })
+    }
     //console.log(payload)
     //console.log(req.headers)
     try {
         const opt = await convertIssue(payload)
         console.log('send >>>' + opt)
         if (opt) {
-            await send({ embeds: [opt] })
+            await send({ embeds: [opt] }, guildId)
             // client.channels.cache
             //     .get('1097865962025402399')
             //     .send({ embeds: [opt] })
