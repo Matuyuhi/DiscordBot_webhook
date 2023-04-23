@@ -112,7 +112,7 @@ client.on(Events.MessageCreate, async function (message) {
              * Client側でBotが閲覧できるチャンネルを制限するべき
              */
             case '!ping':
-                await send(options.ping())
+                await send(options.ping(), String(message.guildId))
                 break
             /**
              * Client ServerにCommand接続
