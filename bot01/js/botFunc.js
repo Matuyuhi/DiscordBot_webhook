@@ -45,8 +45,8 @@ exports.setLink = async function (_gitname, user) {
         }
         await mysqlPromise.commit(connection)
         return true
-    } catch {
-        await mysqlPromise.rollback(connection)
+    } catch (err) {
+        await mysqlPromise.rollback(connection, err)
         return false
     } finally {
         connection.end()
@@ -66,8 +66,8 @@ exports.getLink = async function () {
             return []
         }
         return res
-    } catch {
-        await mysqlPromise.rollback(connection)
+    } catch (err) {
+        await mysqlPromise.rollback(connection, err)
         return false
     } finally {
         connection.end()
@@ -113,8 +113,8 @@ exports.setChannel = async function (_guildId, _channelId, _html_url, _name) {
         }
         await mysqlPromise.commit(connection)
         return true
-    } catch {
-        await mysqlPromise.rollback(connection)
+    } catch (err) {
+        await mysqlPromise.rollback(connection, err)
         return false
     } finally {
         connection.end()
@@ -140,8 +140,8 @@ exports.getChannel = async function (_guildId) {
             return {}
         }
         return res[0]
-    } catch {
-        await mysqlPromise.rollback(connection)
+    } catch (err) {
+        await mysqlPromise.rollback(connection, err)
         return {}
     } finally {
         connection.end()
