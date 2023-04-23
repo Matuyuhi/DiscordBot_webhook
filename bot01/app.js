@@ -232,6 +232,9 @@ async function convertIssue(_data) {
         case 'labeled':
             actionName = '__Labelが変更されました__\n'
             break
+        case 'closed':
+            actionName = '__closeされました__\n'
+            break
         default:
             actionName = '__不明なactionでした__\n'
             break
@@ -295,7 +298,7 @@ async function convertIssue(_data) {
         text: org.login,
         iconURL: org.avater,
     })
-    embed.setTimestamp(new Date(moment(issue.updated_at).format('YYYY-MM-DD HH:mm:ss')))
+    embed.setTimestamp(new Date(moment(issue.updated_at)))
     return embed
 }
 
@@ -351,7 +354,8 @@ String.prototype.replaceUsersLink = function (replaces) {
         const base = String(data.gitname)
         const place = '<@!' + String(data.id) + '>'
         if (out.match(base)) {
-            out = out.replace(new RegExp('@'+base, 'g'), place)
+            out = out.replace(new RegExp(base, 'g'), place)
+            out = out.replace(new RegExp('@' + base, 'g'), place)
         }
     }
     return out
