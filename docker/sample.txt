@@ -48,11 +48,10 @@ DROP TABLE IF EXISTS `serverList`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `serverList` (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT 'Primary Key',
-  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `name` varchar(255) DEFAULT NULL,
-  `guildId` int DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `guildId` varchar(255) DEFAULT NULL,
+  `channelId` varchar(255) DEFAULT NULL,
+  `html_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -74,4 +73,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-23 16:33:44
+-- Dump completed on 2023-04-23 17:40:00
