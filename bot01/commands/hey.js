@@ -94,25 +94,18 @@ module.exports = {
                 ),
             execute: async function (interaction) {
                 try {
-                    console.log(await interaction)
-                    const guildId = await interaction.guildId
-                    const channelId = await interaction.options.getString(
-                        'channelid'
-                    )
-                    const html_url = await interaction.options.getString(
-                        'giturl'
-                    )
-                    const name = await interaction.options.getString('name')
-                    console.log(guildId)
-                    console.log(channelId)
-                    console.log(html_url)
-                    console.log(name)
+                    const itc = await interaction
+                    const guildId = itc.guildId
+                    const channelId = itc.options.getString('channelid')
+                    const html_url = itc.options.getString('giturl')
+                    const name = itc.options.getString('name')
+                    console.log('guildid: ' + guildId)
+                    console.log('channel: ' + channelId)
+                    console.log('hmtl: ' + html_url)
+                    console.log('name: ' + name)
                     if (!guildId || !channelId || !html_url || !name) return
-                    if (await setChannel(guildId, channelId, html_url, name)) {
-                        await interaction.reply('OK')
-                    } else {
-                        await interaction.reply('error')
-                    }
+                    setChannel(guildId, channelId, html_url, name)
+                    await interaction.reply('OK')
                 } catch (err) {
                     console.log(err)
                 }

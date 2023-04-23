@@ -67,7 +67,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     for (const cmd of commands) {
         if (interaction.commandName === cmd.data.name) {
             try {
-                console.log(interaction.options)
+                // console.log(interaction.options)
                 // 一致するコマンドがあったら実行
                 await cmd.execute(interaction)
             } catch (error) {
@@ -86,7 +86,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
                     })
                 }
             }
-
             break
         }
     }
