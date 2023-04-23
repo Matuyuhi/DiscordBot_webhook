@@ -10,7 +10,9 @@ exports.ConnectTest = async function () {
     } catch {
         console.log()
     } finally {
-        connection.end()
+        if (connection.state !== 'disconnected') {
+            connection.end()
+        }
     }
 }
 exports.setLink = async function (_gitname, user) {
@@ -49,7 +51,9 @@ exports.setLink = async function (_gitname, user) {
         await mysqlPromise.rollback(connection, err)
         return false
     } finally {
-        connection.end()
+        if (connection.state !== 'disconnected') {
+            connection.end()
+        }
     }
 }
 
@@ -70,7 +74,9 @@ exports.getLink = async function () {
         await mysqlPromise.rollback(connection, err)
         return false
     } finally {
-        connection.end()
+        if (connection.state !== 'disconnected') {
+            connection.end()
+        }
     }
 }
 
@@ -117,7 +123,9 @@ exports.setChannel = async function (_guildId, _channelId, _html_url, _name) {
         await mysqlPromise.rollback(connection, err)
         return false
     } finally {
-        connection.end()
+        if (connection.state !== 'disconnected') {
+            connection.end()
+        }
     }
 }
 
@@ -144,6 +152,8 @@ exports.getChannel = async function (_guildId) {
         await mysqlPromise.rollback(connection, err)
         return {}
     } finally {
-        connection.end()
+        if (connection.state !== 'disconnected') {
+            connection.end()
+        }
     }
 }
