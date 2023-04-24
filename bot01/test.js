@@ -1,32 +1,21 @@
-const mysql = require('mysql2')
-const { getLink } = require('./js/botFunc')
-
-async function main() {
-    try {
-        const links = await getLink()
-        let data = "@Matuyuhi's New comments\nhello\nAssignes.\nMatuyuhi."
-        console.log(data)
-        data = data.replaceUsersLink(links)
-        console.log(data)
-    } catch (err) {
-        console.log(err)
-    }
+function main() {
+    let data = "@Matuyuhi's New comments\nhello\nAssignes.\nMatuyuhi."
+    console.log(data)
+    data = addBlockLine(data)
+    console.log(data)
 }
 
 /**
- * @param {[{name: String, id: String, gitname: String}]} replaces
+ * 文字列の行の先頭に'> 'をつける
+ * @param {String} _data
  * @returns String
  */
-String.prototype.replaceUsersLink = function (replaces) {
-    let out = this
-    for (const data of replaces) {
-        const base = String(data.gitname)
-        const place = '<!@' + String(data.id) + '>'
-        if (out.match(base)) {
-            out = out.replace(new RegExp(base, 'g'), place)
-        }
+function addBlockLine(_data) {
+    let splits = String(_data).split('\n')
+    for (const i in splits) {
+        splits[i] = '> ' + splits[i]
     }
-    return out
+    return splits.join('\n')
 }
 
 main()

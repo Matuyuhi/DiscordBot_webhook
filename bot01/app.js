@@ -229,30 +229,30 @@ async function convertIssue(_data) {
     let actionName
     switch (action) {
         case 'opened':
-            actionName = '__issueが作成されました !__\n'
+            actionName = '> __issueが作成されました !__\n'
             break
         case 'created':
-            actionName = '__issueにコメントが追加されました__\n'
+            actionName = '> __issueにコメントが追加されました__\n'
             break
         case 'assigned':
-            actionName = '__Assignが変更されました__\n'
+            actionName = '> __Assignが変更されました__\n'
             break
         case 'labeled':
-            actionName = '__Labelが変更されました__\n'
+            actionName = '> __Labelが変更されました__\n'
             break
         case 'closed':
-            actionName = '__closeされました__\n'
+            actionName = '> __closeされました__\n'
             break
         default:
-            actionName = '__不明なactionでした__\n'
+            actionName = '> __不明なactionでした__\n'
             break
     }
 
     let description =
         //issue説明欄
-        (issue.body ? issue.body + '\n' : '') +
+        (issue.body ? String(addBlockLine(issue.body)) + '\n' : '') +
         //commentの数
-        '__comments : ' +
+        '> __comments : ' +
         issue.comments +
         '__\n' +
         // status
@@ -346,7 +346,7 @@ function convertAssignes(_data) {
 function convertLabels(_labels) {
     let namesText = ''
     for (const label of _labels) {
-        namesText += String(label.name ? label.name + '.  ' : '')
+        namesText += String(label.name ? '`' + label.name + '`.  ' : '')
     }
     return namesText
 }
@@ -362,9 +362,22 @@ String.prototype.replaceUsersLink = function (replaces) {
         const base = String(data.gitname)
         const place = '<@!' + String(data.id) + '>'
         if (out.match(base)) {
-            out = out.replace(new RegExp(base, 'g'), place)
             out = out.replace(new RegExp('@' + base, 'g'), place)
+            out = out.replace(new RegExp(base, 'g'), place)
         }
     }
     return out
+}
+
+/**
+ * 文字列の行の先頭に'> 'をつける
+ * @param {String} _data
+ * @returns String
+ */
+function addBlockLine(_data) {
+    let splits = String(_data).split('\n')
+    for (const i in splits) {
+        splits[i] = '> ' + splits[i]
+    }
+    return splits.join('\n')
 }
