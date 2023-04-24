@@ -36,7 +36,11 @@ const { token } = require('./.env.json')
 // 起動するとconsoleに{Bot Name}ready...と表示される
 client.once(Events.ClientReady, (c) => {
     // discord.jsのversionも表示
-    client.user.setActivity('/help ', {type: 'LISTENING'})
+    client.user.setPresence({
+        activity: { name: client.channels.cache.size + 'サーバーに導入中' },
+        status: 'online',
+    })
+    // client.user.setActivity('/help ', { type: 'LISTENING' })
     console.log('discord.js version: ' + require('discord.js').version)
     console.log(`${c.user.tag}ready...`)
 })
