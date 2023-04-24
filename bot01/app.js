@@ -363,8 +363,8 @@ String.prototype.replaceUsersLink = function (replaces) {
         const base = String(data.gitname)
         const place = '<@!' + String(data.id) + '>'
         if (out.match(base)) {
-            out = out.replace(new RegExp('@' + base, 'g'), place)
-            out = out.replace(new RegExp(base, 'g'), place)
+            out = out.replace(new RegExp('(^|[^\\w\\/])@' + base, 'g'), place)
+            out = out.replace(new RegExp('(^|[^\\w\\/])' + base, 'g'), place)
         }
     }
     return out
