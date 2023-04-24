@@ -39,6 +39,10 @@ client.once(Events.ClientReady, (c) => {
     // client.user.setActivity('/help ', { type: 'LISTENING' })
     console.log('discord.js version: ' + require('discord.js').version)
     console.log(`${c.user.tag}ready...`)
+    client.user.setPresence({
+        activity: { name: client.channels.cache.size + 'サーバーに導入中' },
+        status: 'online',
+    })
 })
 
 /**
@@ -191,10 +195,6 @@ app.listen(port, () => {
 
 // Discordへの接続
 client.login(token)
-client.user.setPresence({
-    activity: { name: client.channels.cache.size + 'サーバーに導入中' },
-    status: 'online',
-})
 
 /**
  * User: {login: String, avatar_url: String, html_url: String}
