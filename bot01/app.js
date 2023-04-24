@@ -40,7 +40,10 @@ client.once(Events.ClientReady, (c) => {
     console.log('discord.js version: ' + require('discord.js').version)
     console.log(`${c.user.tag}ready...`)
     client.user.setPresence({
-        activity: { name: client.channels.cache.size + 'サーバーに導入中' },
+        activity: {
+            name: client.channels.cache.size + 'サーバーに導入中',
+            type: 'PLAYING',
+        },
         status: 'online',
     })
 })
