@@ -302,6 +302,7 @@ async function convertIssue(_data) {
         })
     }
 
+    embed.setColor('#00c7fc')
     embed.setFooter({
         text: org.login,
         iconURL: org.avater,
