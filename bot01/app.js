@@ -245,7 +245,8 @@ async function convertIssue(_data) {
             break
         default:
             actionName = '> __不明なactionでした__\n'
-            break
+            return
+        // break
     }
 
     let description =
@@ -276,7 +277,7 @@ async function convertIssue(_data) {
         const comment = String(_data.comment.body).replaceUsersLink(links)
         const user = convertUser(_data.comment.user)
         const title = String(
-            '**@' + user.login + "'s New Comment**\n"
+            '** @' + user.login + "'s New Comment **\n"
         ).replaceUsersLink(links)
         embed.addFields({
             name: ' ',
