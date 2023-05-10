@@ -245,9 +245,9 @@ async function convertIssue(_data) {
                 actionName = '> __closeされました__\n'
                 break
             default:
-                actionName = '> __不明なactionでした__\n'
-                return
-            // break
+                //actionName = '> __不明なactionでした__\n'
+                actionName = '\n'
+                break
         }
 
         let description =
