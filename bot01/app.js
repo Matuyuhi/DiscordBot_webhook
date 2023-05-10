@@ -210,106 +210,110 @@ client.login(token)
  * @returns EmbedBuilder
  */
 async function convertIssue(_data) {
-    if (!_data.action || !_data.issue || !_data.issue.user) return
-    const issue = _data.issue
-    const action = _data.action
-    const repository = _data.repository
+    try {
+        if (!_data.action || !_data.issue || !_data.issue.user) return
+        const issue = _data.issue
+        const action = _data.action
+        const repository = _data.repository
 
-    const editor = convertUser(_data.sender)
-    const htmlUrl = issue.html_url
-    const title =
-        '[' +
-        String(repository.full_name) +
-        ']#' +
-        String(issue.number) +
-        ':  ' +
-        String(issue.title)
-    const org = convertUser(_data.organization)
+        const editor = convertUser(_data.sender)
+        const htmlUrl = issue.html_url
+        const title =
+            '[' +
+            String(repository.full_name) +
+            ']#' +
+            String(issue.number) +
+            ':  ' +
+            String(issue.title)
+        const org = convertUser(_data.organization)
 
-    let actionName
-    switch (action) {
-        case 'opened':
-            actionName = '> __issueが作成されました !__\n'
-            break
-        case 'created':
-            actionName = '> __issueにコメントが追加されました__\n'
-            break
-        case 'assigned':
-            actionName = '> __Assignが変更されました__\n'
-            break
-        case 'labeled':
-            actionName = '> __Labelが変更されました__\n'
-            break
-        case 'closed':
-            actionName = '> __closeされました__\n'
-            break
-        default:
-            actionName = '> __不明なactionでした__\n'
-            return
-        // break
-    }
+        let actionName
+        switch (action) {
+            case 'opened':
+                actionName = '> __issueが作成されました !__\n'
+                break
+            case 'created':
+                actionName = '> __issueにコメントが追加されました__\n'
+                break
+            case 'assigned':
+                actionName = '> __Assignが変更されました__\n'
+                break
+            case 'labeled':
+                actionName = '> __Labelが変更されました__\n'
+                break
+            case 'closed':
+                actionName = '> __closeされました__\n'
+                break
+            default:
+                actionName = '> __不明なactionでした__\n'
+                return
+            // break
+        }
 
-    let description =
-        //issue説明欄
-        (issue.body ? String(addBlockLine(issue.body)) + '\n' : '') +
-        //commentの数
-        '> __comments : ' +
-        issue.comments +
-        '__\n' +
-        // status
-        actionName
+        let description =
+            //issue説明欄
+            (issue.body ? String(addBlockLine(issue.body)) + '\n' : '') +
+            //commentの数
+            '> __comments : ' +
+            issue.comments +
+            '__\n' +
+            // status
+            actionName
 
-    const links = await getLink()
-    description = String(description.replaceUsersLink(links))
-    console.log(description)
+        const links = await getLink()
+        description = String(description.replaceUsersLink(links))
+        console.log(description)
 
-    const embed = new EmbedBuilder()
-    embed.setAuthor({
-        name: editor.login,
-        url: editor.url,
-        iconURL: editor.avatar,
-    })
-    embed.setTitle(title)
-    embed.setURL(htmlUrl)
-    embed.setDescription(description)
-
-    if (_data.comment) {
-        const comment = String(_data.comment.body).replaceUsersLink(links)
-        const user = convertUser(_data.comment.user)
-        const title = String(
-            '** @' + user.login + "'s New Comment **\n"
-        ).replaceUsersLink(links)
-        embed.addFields({
-            name: ' ',
-            value: title + comment,
+        const embed = new EmbedBuilder()
+        embed.setAuthor({
+            name: editor.login,
+            url: editor.url,
+            iconURL: editor.avatar,
         })
-    }
+        embed.setTitle(title)
+        embed.setURL(htmlUrl)
+        embed.setDescription(description)
 
-    const assignes = convertAssignes(issue.assignees)
-    if (assignes) {
-        embed.addFields({
-            name: 'Assignes',
-            value: String(assignes.replaceUsersLink(links)),
-            inline: true,
+        if (_data.comment) {
+            const comment = String(_data.comment.body).replaceUsersLink(links)
+            const user = convertUser(_data.comment.user)
+            const title = String(
+                '** @' + user.login + "'s New Comment **\n"
+            ).replaceUsersLink(links)
+            embed.addFields({
+                name: ' ',
+                value: title + comment,
+            })
+        }
+
+        const assignes = convertAssignes(issue.assignees)
+        if (assignes) {
+            embed.addFields({
+                name: 'Assignes',
+                value: String(assignes.replaceUsersLink(links)),
+                inline: true,
+            })
+        }
+
+        const labels = convertLabels(issue.labels)
+        if (labels) {
+            embed.addFields({
+                name: 'Labels',
+                value: labels,
+                inline: true,
+            })
+        }
+
+        embed.setColor('#00c7fc')
+        embed.setFooter({
+            text: org.login,
+            iconURL: org.avater,
         })
+        embed.setTimestamp(new Date(moment(issue.updated_at)))
+        return embed
+    } catch (err) {
+        console.log(err)
     }
-
-    const labels = convertLabels(issue.labels)
-    if (labels) {
-        embed.addFields({
-            name: 'Labels',
-            value: labels,
-            inline: true,
-        })
-    }
-
-    embed.setColor('#00c7fc')
-    embed.setFooter({
-        text: org.login,
-        iconURL: org.avater,
-    })
-    embed.setTimestamp(new Date(moment(issue.updated_at)))
-    return embed
 }
 
 /**
