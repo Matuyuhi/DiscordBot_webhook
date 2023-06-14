@@ -11,11 +11,15 @@ services:
       - MYSQL_ROOT_HOST=%
       - MYSQL_ROOT_PASSWORD=master
       - TZ=Asia/Tokyo
+      - MYSQL_TCP_PORT=9011
 
 
     ports:
-      - '3306:3306'
-      - '33060:33060'
+      - '9011:3306'
+      # - '33060:33060'
+
+    expose:
+      - 9011
 
     volumes:
       - ./db/init.d:/docker-entrypoint-initdb.d
@@ -30,13 +34,14 @@ services:
 
     environment:
       - MYSQL_HOST=db
+      - MYSQL_PORT=9011
       - TZ=Asia/Tokyo
       - SHIFTAPP_DEV=dev
 
     tty: true
 
     ports:
-      - '3000:3000'
+      - '9010:3000'
 
     volumes:
       - ../bot01:/bot01
