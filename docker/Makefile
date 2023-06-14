@@ -1,5 +1,5 @@
 run:
-	docker compose up -d
+	docker compose -p dbot up -d
 
 down:
 	docker compose down
