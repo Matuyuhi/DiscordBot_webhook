@@ -4,6 +4,7 @@ module.exports = {
         user: process.env.MYSQL_USERNAME || 'master',
         password: process.env.MYSQL_PASSWORD || 'master',
         database: process.env.MYSQL_DATABASE || 'bot01',
+        port: process.env.MYSQL_PORT || '3306',
         multipleStatements: process.env.MYSQL_MULTIPLESTATEMENTS || true,
         charset: process.env.MYSQL_CHARSET || 'UTF8mb4',
     },
