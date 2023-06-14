@@ -1,9 +1,9 @@
 version: '3'
 services:
-  db:
+  DiscordBotDb:
     image: mysql:8.0.32-debian
     platform: linux/amd64
-    container_name: db-container
+    container_name: DiscordBotdb
 
     command: mysqld --innodb_use_native_aio=0
 
@@ -24,9 +24,9 @@ services:
       # data
       - ./db/data:/var/lib/mysql
 
-  app:
+  DiscordBotApp:
     image: node:latest
-    container_name: DiscordBot01
+    container_name: DiscordBotApp
 
     environment:
       - MYSQL_HOST=db
@@ -44,6 +44,6 @@ services:
     working_dir: /bot01
 
     depends_on:
-      - db
+      - DiscordBotDb
 
     command: make pm2
