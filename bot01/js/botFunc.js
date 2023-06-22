@@ -10,9 +10,7 @@ exports.ConnectTest = async function () {
     } catch {
         console.log()
     } finally {
-        if (connection.state !== 'disconnected') {
-            connection.end()
-        }
+        connection.end()
     }
 }
 exports.setLink = async function (_gitname, user) {
@@ -49,19 +47,16 @@ exports.setLink = async function (_gitname, user) {
         return true
     } catch (err) {
         await mysqlPromise.rollback(connection, err)
-        return false
     } finally {
-        if (connection.state !== 'disconnected') {
-            connection.end()
-        }
+        connection.end()
     }
 }
 
 exports.getLink = async function () {
     const connection = mysql.createConnection(config.connect)
     try {
+	
         await mysqlPromise.beginTransaction(connection)
-
         const res = await mysqlPromise.query(
             connection,
             'select * from linkList'
@@ -72,7 +67,6 @@ exports.getLink = async function () {
         return res
     } catch (err) {
         await mysqlPromise.rollback(connection, err)
-        return false
     } finally {
         if (connection.state !== 'disconnected') {
             connection.end()
