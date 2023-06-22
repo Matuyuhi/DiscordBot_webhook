@@ -7,8 +7,12 @@ exports.ConnectTest = async function () {
     const connection = mysql.createConnection(config.connect)
     try {
         await mysqlPromise.beginTransaction(connection)
-    } catch {
-        console.log()
+        await mysqlPromise.commit(connection)
+    } catch (err) {
+        console.error(err)
+        if (connection.state !== 'disconnected') {
+            await mysqlPromise.rollback(connection)
+        }
     } finally {
         connection.end()
     }
@@ -46,7 +50,10 @@ exports.setLink = async function (_gitname, user) {
         await mysqlPromise.commit(connection)
         return true
     } catch (err) {
-        await mysqlPromise.rollback(connection, err)
+        console.error(err)
+        if (connection.state !== 'disconnected') {
+            await mysqlPromise.rollback(connection)
+        }
     } finally {
         connection.end()
     }
@@ -55,7 +62,6 @@ exports.setLink = async function (_gitname, user) {
 exports.getLink = async function () {
     const connection = mysql.createConnection(config.connect)
     try {
-	
         await mysqlPromise.beginTransaction(connection)
         const res = await mysqlPromise.query(
             connection,
@@ -64,9 +70,13 @@ exports.getLink = async function () {
         if (!res || !res[0]) {
             return []
         }
+        await mysqlPromise.commit(connection)
         return res
     } catch (err) {
-        await mysqlPromise.rollback(connection, err)
+        console.error(err)
+        if (connection.state !== 'disconnected') {
+            await mysqlPromise.rollback(connection)
+        }
     } finally {
         if (connection.state !== 'disconnected') {
             connection.end()
@@ -114,8 +124,10 @@ exports.setChannel = async function (_guildId, _channelId, _html_url, _name) {
         await mysqlPromise.commit(connection)
         return true
     } catch (err) {
-        await mysqlPromise.rollback(connection, err)
-        return false
+        console.error(err)
+        if (connection.state !== 'disconnected') {
+            await mysqlPromise.rollback(connection)
+        }
     } finally {
         if (connection.state !== 'disconnected') {
             connection.end()
@@ -141,10 +153,13 @@ exports.getChannel = async function (_guildId) {
         if (!res || !res[0]) {
             return {}
         }
+        await mysqlPromise.commit(connection)
         return res[0]
     } catch (err) {
-        await mysqlPromise.rollback(connection, err)
-        return {}
+        console.error(err)
+        if (connection.state !== 'disconnected') {
+            await mysqlPromise.rollback(connection)
+        }
     } finally {
         if (connection.state !== 'disconnected') {
             connection.end()
