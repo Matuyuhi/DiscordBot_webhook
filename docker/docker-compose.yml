@@ -33,7 +33,7 @@ services:
     container_name: DiscordBotApp
 
     environment:
-      - MYSQL_HOST=db
+      - MYSQL_HOST=DiscordBotDb
       - MYSQL_PORT=9011
       - TZ=Asia/Tokyo
       - SHIFTAPP_DEV=dev
