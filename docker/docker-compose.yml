@@ -21,6 +21,8 @@ services:
     expose:
       - 9011
 
+    restart: always
+
     volumes:
       - ./db/init.d:/docker-entrypoint-initdb.d
       - ./db/conf/my.conf:/etc/mysql/conf.d/my.conf:ro
@@ -42,6 +44,8 @@ services:
 
     ports:
       - '9010:3000'
+
+    restart: always
 
     volumes:
       - ../bot01:/bot01
