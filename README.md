@@ -1,5 +1,5 @@
 # discord_bot_test
-github webhook からdiscordに通知を送るbot
+github webhookからdiscordに通知を送るbot
 discord.js + express.js
 
 
