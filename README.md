@@ -2,7 +2,6 @@
 github webhookからdiscordに通知を送るbot
 discord.js + express.js
 
-
 ## 動作確認済み環境
 - macOS 13.4 or Ubuntu22.04
 - nodejs v20.2.0
@@ -19,3 +18,4 @@ make
 make down
 
 ```
+
