@@ -1,6 +1,6 @@
 # discord_bot_test
 github webhook からdiscordに通知を送るbot
-discord.js + expressjs
+discord.js + express.js
 
 
 ## 動作確認済み環境
